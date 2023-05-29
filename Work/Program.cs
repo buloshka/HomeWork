@@ -42,7 +42,8 @@ public static class First
 
 
         Console.WriteLine($"Лыжнику потребуется {totalD} дня " +
-                          $"{totalH} часа {totalM} минут {totalS} секунд");
+                          $"{totalH} часа {totalM} минут {totalS} секунд, " +
+                          $"чтобы превысить 100 км");
 
         Console.ReadKey();
     }
