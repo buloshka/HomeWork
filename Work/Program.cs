@@ -139,7 +139,7 @@ public static class Third
 
     static void Second()
     {
-        int[] array = GenerateRandomArray(10); // Создание массива из 10 случайных целых чисел
+        int[] array = GenerateRandomArray(10);
 
         Console.WriteLine("Задание 2");
 
@@ -167,7 +167,7 @@ public static class Third
 
         for (int i = 0; i < length; i++)
         {
-            array[i] = random.Next(-100, 100); // Генерация случайного целого числа от 0 до 99
+            array[i] = random.Next(-100, 100);
         }
 
         return array;
