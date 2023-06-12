@@ -5,8 +5,8 @@
 
     public Transport(string model, int maxSpeed)
     {
-        _model = model;
-        _maxSpeed = maxSpeed;
+        this._model = model;
+        this._maxSpeed = maxSpeed;
     }
 
     public virtual void DisplayInfo()
@@ -21,9 +21,10 @@ public class Auto : Transport
 {
     protected int _numberOfSeats;
 
-    public Auto(string model, int maxSpeed, int numberOfSeats) : base(model, maxSpeed)
+    public Auto(string model, int maxSpeed, int numberOfSeats)
+         : base(model, maxSpeed)
     {
-        _numberOfSeats = numberOfSeats;
+        this._numberOfSeats = numberOfSeats;
     }
 
     public override void DisplayInfo()
@@ -35,11 +36,12 @@ public class Auto : Transport
 
 public class Car : Auto
 {
-    protected string _bodyType;
+    private string _bodyType;
 
-    public Car(string model, int maxSpeed, int numberOfSeats, string bodyType) : base(model, maxSpeed, numberOfSeats)
+    public Car(string model, int maxSpeed, int numberOfSeats, string bodyType)
+        : base(model, maxSpeed, numberOfSeats)
     {
-        _bodyType = bodyType;
+        this._bodyType = bodyType;
     }
 
     public override void DisplayInfo()
@@ -51,11 +53,12 @@ public class Car : Auto
 
 public class Truck : Auto
 {
-    protected int _maxLoad;
+    private int _maxLoad;
 
-    public Truck(string model, int maxSpeed, int numberOfSeats, int maxLoad) : base(model, maxSpeed, numberOfSeats)
+    public Truck(string model, int maxSpeed, int numberOfSeats, int maxLoad)
+          : base(model, maxSpeed, numberOfSeats)
     {
-        _maxLoad = maxLoad;
+        this._maxLoad = maxLoad;
     }
 
     public override void DisplayInfo()
@@ -69,9 +72,10 @@ public class Airplane : Transport
 {
     protected int _flightAltitude;
 
-    public Airplane(string model, int maxSpeed, int flightAltitude) : base(model, maxSpeed)
+    public Airplane(string model, int maxSpeed, int flightAltitude)
+             : base(model, maxSpeed)
     {
-        _flightAltitude = flightAltitude;
+        this._flightAltitude = flightAltitude;
     }
 
     public override void DisplayInfo()
@@ -83,11 +87,12 @@ public class Airplane : Transport
 
 public class CargoPlane : Airplane
 {
-    protected int _maxCargoWeight;
+    private int _maxCargoWeight;
 
-    public CargoPlane(string model, int maxSpeed, int flightAltitude, int maxCargoWeight) : base(model, maxSpeed, flightAltitude)
+    public CargoPlane(string model, int maxSpeed, int flightAltitude, int maxCargoWeight)
+               : base(model, maxSpeed, flightAltitude)
     {
-        _maxCargoWeight = maxCargoWeight;
+        this._maxCargoWeight = maxCargoWeight;
     }
 
     public override void DisplayInfo()
@@ -99,11 +104,12 @@ public class CargoPlane : Airplane
 
 public class PassengerPlane : Airplane
 {
-    protected int _maxPassengerCount;
+    private int _maxPassengerCount;
 
-    public PassengerPlane(string model, int maxSpeed, int flightAltitude, int maxPassengerCount) : base(model, maxSpeed, flightAltitude)
+    public PassengerPlane(string model, int maxSpeed, int flightAltitude, int maxPassengerCount)
+                   : base(model, maxSpeed, flightAltitude)
     {
-        _maxPassengerCount = maxPassengerCount;
+        this._maxPassengerCount = maxPassengerCount;
     }
 
     public override void DisplayInfo()
@@ -115,11 +121,12 @@ public class PassengerPlane : Airplane
 
 public class Train : Transport
 {
-    protected int _carriageCount;
+    private int _carriageCount;
 
-    public Train(string model, int maxSpeed, int carriageCount) : base(model, maxSpeed)
+    public Train(string model, int maxSpeed, int carriageCount)
+          : base(model, maxSpeed)
     {
-        _carriageCount = carriageCount;
+        this._carriageCount = carriageCount;
     }
 
     public override void DisplayInfo()
