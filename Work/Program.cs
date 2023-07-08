@@ -5,13 +5,11 @@ namespace VendingMachine
 {
     public class VendingMachine
     {
-        private int balance;
         private List<Transaction> transactions;
         private Dictionary<int, Product> products;
 
         public VendingMachine()
         {
-            balance = 0;
             transactions = new List<Transaction>();
             products = new Dictionary<int, Product>();
         }
@@ -40,7 +38,6 @@ namespace VendingMachine
                 int coin10Total = coin10Count * 10;
 
                 int totalAmount = coin1Total + coin2Total + coin5Total + coin10Total;
-                balance += totalAmount;
                 user.Balance += totalAmount;
 
                 Console.WriteLine($"Добавлено {totalAmount} рублей на баланс.");
@@ -52,7 +49,6 @@ namespace VendingMachine
                 Console.WriteLine("Введите сумму для перевода:");
                 int amount = GetIntegerInput(0);
 
-                balance += amount;
                 user.Balance += amount;
 
                 Console.WriteLine($"Добавлено {amount} рублей на баланс.");
@@ -75,7 +71,6 @@ namespace VendingMachine
 
                 if (confirmation.ToUpper() == "Y")
                 {
-                    balance += totalAmount;
                     user.Balance += totalAmount;
 
                     Console.WriteLine($"Добавлено {totalAmount} рублей на баланс.");
@@ -94,10 +89,10 @@ namespace VendingMachine
 
         public void GetChange(ATMUser user)
         {
-            if (balance > 0)
+            if (user.Balance > 0)
             {
                 Console.WriteLine("Сумма сдачи:");
-                int remainingBalance = balance;
+                int remainingBalance = user.Balance;
 
                 int tenRubles = remainingBalance / 10;
                 remainingBalance %= 10;
@@ -121,9 +116,8 @@ namespace VendingMachine
                 if (confirmation.ToUpper() == "Y")
                 {
                     Console.WriteLine("Сдача получена.");
-                    transactions.Add(new Transaction(DateTime.Now, $"Получение сдачи: {balance} рублей"));
+                    transactions.Add(new Transaction(DateTime.Now, $"Получение сдачи: {user.Balance} рублей"));
 
-                    balance = 0;
                     user.Balance = 0;
                 }
                 else
@@ -224,7 +218,6 @@ namespace VendingMachine
                 {
                     if (user.Balance >= totalPrice)
                     {
-                        balance += totalPrice;
                         user.Balance -= totalPrice;
 
                         products[selectedProductId].Count -= selectedProductQuantity;
