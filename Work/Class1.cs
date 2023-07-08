@@ -1,137 +1,240 @@
-﻿public class Transport
+﻿public abstract class Transport
 {
-    protected string _model;
-    protected int _maxSpeed;
+    public string Name { get; private set; }
+    public string Manufacturer { get; private set; }
 
-    public Transport(string model, int maxSpeed)
+    /// <summary> Количество энергии в баке/батарее в КВт*Ч </summary>
+    public double EnergyStorage { get; private set; }
+    public double Weight { get; private set; }
+    public double Speed { get; private set; }
+    public double Price { get; private set; }
+    public int PassangerAmount { get; private set; }
+
+    public Transport(string name, string manufacturer, double energyStorage, double weight, double speed, double price, int passangerAmount = 4)
     {
-        this._model = model;
-        this._maxSpeed = maxSpeed;
+        Name = name;
+        Manufacturer = manufacturer;
+        PassangerAmount = passangerAmount;
+        EnergyStorage = energyStorage;
+        Weight = weight;
+        Speed = speed;
+        Price = price;
     }
 
-    public virtual void DisplayInfo()
+    public virtual string GetInfo()
     {
-        Console.WriteLine($"Transport Type: {GetType().Name}");
-        Console.WriteLine($"Model: {_model}");
-        Console.WriteLine($"Max Speed: {_maxSpeed} km/h");
+        return $"Название - {Name};\nПроизводитель - {Manufacturer};\nКоличество пассажиров - {PassangerAmount};\nВместимось энергии - {EnergyStorage}КВт*ч;\nВес - {Weight}Кг;\nСкорость - {Speed}Км/Ч;\nЦена - {Price} Рублей;";
+    }
+}
+public class Engine
+{
+    public string Name { get; private set; }
+    public string Manufacturer { get; private set; }
+
+    /// <summary> Мощность в КВт </summary>
+    public double Power { get; private set; }
+
+    /// <summary> Энергопотребление в КВт*Ч/100Км </summary>
+    public double EnergyConsumption { get; private set; }
+
+    public Engine(string manufacturer, string name, double power, double energyConsumption)
+    {
+        Manufacturer = manufacturer;
+        Name = name;
+        Power = power;
+        EnergyConsumption = energyConsumption;
+    }
+
+    public override string ToString()
+    {
+        return $"Название - {Name};\nМощность - {Power}КВт;\nЭнергопотребление - {EnergyConsumption}КВт*Ч/100Км";
     }
 }
 
-public class Auto : Transport
+public abstract class Automobile : Transport
 {
-    protected int _numberOfSeats;
+    public Engine Engine { get; private set; }
 
-    public Auto(string model, int maxSpeed, int numberOfSeats)
-         : base(model, maxSpeed)
+    protected Automobile(string name, string manufacturer, Engine engine, double energyStorage, double weight, double speed, double price, int passangerAmount) : base(name, manufacturer, energyStorage, weight, speed, price, passangerAmount)
     {
-        this._numberOfSeats = numberOfSeats;
+        Engine = engine;
     }
 
-    public override void DisplayInfo()
+    public new string GetInfo()
     {
-        base.DisplayInfo();
-        Console.WriteLine($"Number of Seats: {_numberOfSeats}");
+        return base.GetInfo() + $"\nДвигатель\n{Engine}\n";
+    }
+    public void Drive(double distance)
+    {
+        if (EnergyStorage >= Engine.EnergyConsumption * distance / 100)
+        {
+            Console.WriteLine("Затрачено энергии - " + Engine.EnergyConsumption * distance + "КВт*Ч");
+        }
+        else
+        {
+            Console.WriteLine("Не хватает объёма бака");
+        }
     }
 }
 
-public class Car : Auto
+public sealed class PassangerCar : Automobile
 {
-    private string _bodyType;
-
-    public Car(string model, int maxSpeed, int numberOfSeats, string bodyType)
-        : base(model, maxSpeed, numberOfSeats)
+    /// <summary> В кубических метрах </summary>
+    public double TrunkVolume { get; private set; }
+    public PassangerCar(string name, string manufacturer, Engine engine, double energyStorage, double weight, double speed, double price, double trunkVolume, int passangerAmount) : base(name, manufacturer, engine, energyStorage, weight, speed, price, passangerAmount)
     {
-        this._bodyType = bodyType;
+        TrunkVolume = trunkVolume;
+    }
+    public new string GetInfo()
+    {
+        return base.GetInfo() + $"Объём багажника - {TrunkVolume} метров кубических;";
     }
 
-    public override void DisplayInfo()
+    public void TrunkFill(double volume)
     {
-        base.DisplayInfo();
-        Console.WriteLine($"Body Type: {_bodyType}");
+        if (volume < TrunkVolume)
+        {
+            Console.WriteLine("Поместилось");
+        }
+        else
+        {
+            Console.WriteLine("Не поместилось");
+        }
     }
 }
 
-public class Truck : Auto
+public sealed class Lorry : Automobile
 {
-    private int _maxLoad;
+    /// <summary> В Кг </summary>
+    public double CarryWeight { get; private set; }
 
-    public Truck(string model, int maxSpeed, int numberOfSeats, int maxLoad)
-          : base(model, maxSpeed, numberOfSeats)
+    public Lorry(string name, string manufacturer, Engine engine, double energyStorage, double weight, double speed, double price, double carryWeight, int passangerAmount) : base(name, manufacturer, engine, energyStorage, weight, speed, price, passangerAmount)
     {
-        this._maxLoad = maxLoad;
+        CarryWeight = carryWeight;
+    }
+    public new string GetInfo()
+    {
+        return base.GetInfo() + $"Грузоподъёмность - {CarryWeight}Кг;";
     }
 
-    public override void DisplayInfo()
+    public void CargoVeightMeasure(double weight)
     {
-        base.DisplayInfo();
-        Console.WriteLine($"Max Load: {_maxLoad} kg");
+        if (weight < CarryWeight)
+        {
+            Console.WriteLine("Хватает грузоподъёмности");
+        }
+        else
+        {
+            Console.WriteLine("Не хватает грузоподъёмности");
+        }
     }
 }
 
-public class Airplane : Transport
+public abstract class Plane : Transport
 {
-    protected int _flightAltitude;
+    public Engine Engine { get; private set; }
 
-    public Airplane(string model, int maxSpeed, int flightAltitude)
-             : base(model, maxSpeed)
+    /// <summary> В метрах </summary>
+    public double WingSpan { get; private set; }
+
+    protected Plane(string name, string manufacturer, double wingSpan, Engine engine, double energyStorage, double weight, double speed, double price, int passangerAmount) : base(name, manufacturer, energyStorage, weight, speed, price, passangerAmount)
     {
-        this._flightAltitude = flightAltitude;
+        WingSpan = wingSpan;
+        Engine = engine;
     }
 
-    public override void DisplayInfo()
+    public override string GetInfo()
     {
-        base.DisplayInfo();
-        Console.WriteLine($"Flight Altitude: {_flightAltitude} meters");
+        return base.GetInfo() + $"\nДвигатель\n{Engine}\nРазмах крыльев - {WingSpan};";
+    }
+
+    public virtual void Flight(double distance)
+    {
+        if (EnergyStorage >= Engine.EnergyConsumption * distance / 100)
+        {
+            Console.WriteLine("Затрачено энергии - " + Engine.EnergyConsumption * distance + "КВт*Ч");
+        }
+        else
+        {
+            Console.WriteLine("Не хватает объёма бака");
+        }
     }
 }
 
-public class CargoPlane : Airplane
+public sealed class PassangerPlane : Plane
 {
-    private int _maxCargoWeight;
-
-    public CargoPlane(string model, int maxSpeed, int flightAltitude, int maxCargoWeight)
-               : base(model, maxSpeed, flightAltitude)
+    public bool International { get; private set; }
+    public PassangerPlane(string name, string manufacturer, Engine engine, double energyStorage, double weight, double speed, double price, double wingSpan, int passangerAmount, bool international = false) : base(name, manufacturer, wingSpan, engine, energyStorage, weight, speed, price, passangerAmount)
     {
-        this._maxCargoWeight = maxCargoWeight;
+        International = international;
+    }
+    public override string GetInfo()
+    {
+        return base.GetInfo() + $"\nМежду стран - {(International ? "Да" : "Нет")};";
     }
 
-    public override void DisplayInfo()
+    public void Flight(double distance, int passangersAmount)
     {
-        base.DisplayInfo();
-        Console.WriteLine($"Max Cargo Weight: {_maxCargoWeight} kg");
+        if (EnergyStorage >= Engine.EnergyConsumption * distance / 100 && passangersAmount <= PassangerAmount)
+        {
+            Console.WriteLine("Затрачено энергии - " + Engine.EnergyConsumption * distance + "КВт*Ч");
+        }
+        else
+        {
+            Console.WriteLine("Не хватает объёма бака или количества мест");
+        }
     }
+
 }
 
-public class PassengerPlane : Airplane
+public sealed class CargoPlane : Plane
 {
-    private int _maxPassengerCount;
+    public bool International { get; private set; }
 
-    public PassengerPlane(string model, int maxSpeed, int flightAltitude, int maxPassengerCount)
-                   : base(model, maxSpeed, flightAltitude)
+    /// <summary> В Кг </summary>
+    public double CarryWeight { get; private set; }
+    public CargoPlane(string name, string manufacturer, Engine engine, double energyStorage, double weight, double speed, double price, double carryWeight, double wingSpan, int passangerAmount, bool international = false) : base(name, manufacturer, wingSpan, engine, energyStorage, weight, speed, price, passangerAmount)
     {
-        this._maxPassengerCount = maxPassengerCount;
+        International = international;
+        CarryWeight = carryWeight;
     }
 
-    public override void DisplayInfo()
+    public override string GetInfo()
     {
-        base.DisplayInfo();
-        Console.WriteLine($"Max Passenger Count: {_maxPassengerCount}");
+        return base.GetInfo() + $"\nМежду стран - {(International ? "Да" : "Нет")};\nГрузоподъёмность - {CarryWeight}Кг";
+    }
+
+    public void Flight(double distance, double weight)
+    {
+        if (EnergyStorage >= Engine.EnergyConsumption * distance / 100 && weight <= CarryWeight)
+        {
+            Console.WriteLine("Затрачено энергии - " + Engine.EnergyConsumption * distance + "КВт*Ч");
+        }
+        else
+        {
+            Console.WriteLine("Не хватает объёма бака или грузоподъёмности");
+        }
     }
 }
 
 public class Train : Transport
 {
-    private int _carriageCount;
+    public Engine Engine { get; private set; }
+    public int TrainCars { get; private set; }
 
-    public Train(string model, int maxSpeed, int carriageCount)
-          : base(model, maxSpeed)
+    public Train(string name, string manufacturer, Engine engine, double energyStorage, double weight, double speed, double price, int passangerAmount, int trainCars = 10) : base(name, manufacturer, energyStorage, weight, speed, price, passangerAmount)
     {
-        this._carriageCount = carriageCount;
+        TrainCars = trainCars;
+        Engine = engine;
     }
 
-    public override void DisplayInfo()
+    public new string GetInfo()
     {
-        base.DisplayInfo();
-        Console.WriteLine($"Carriage Count: {_carriageCount}");
+        return base.GetInfo() + $"\nДвигатель\n{Engine}\nКоличество вагонов - {TrainCars};";
+    }
+    public void Route(double distance)
+    {
+        if (EnergyStorage >= Engine.EnergyConsumption * distance / 100) Console.WriteLine("Затрачено энергии - " + Engine.EnergyConsumption * distance + "КВт*Ч");
+        else Console.WriteLine("Не хватает объёма бака");
     }
 }
