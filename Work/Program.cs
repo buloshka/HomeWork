@@ -1,4 +1,7 @@
-﻿namespace VendingMachine
+﻿using System;
+using System.Collections.Generic;
+
+namespace VendingMachine
 {
     public class VendingMachine
     {
@@ -16,24 +19,24 @@
         public void AddMoney(ATMUser user)
         {
             Console.WriteLine("Выберите тип оплаты: 1 - наличными, 2 - картой данного банка, 3 - с карты другого банка");
-            int paymentType = GetIntegerInput();
+            int paymentType = GetIntegerInput(0);
 
             if (paymentType == 1)
             {
                 Console.WriteLine("Введите количество монет номиналом 1 рубль:");
-                int coin1Count = GetIntegerInput();
+                int coin1Count = GetIntegerInput(0);
                 int coin1Total = coin1Count;
 
                 Console.WriteLine("Введите количество монет номиналом 2 рубля:");
-                int coin2Count = GetIntegerInput();
+                int coin2Count = GetIntegerInput(0);
                 int coin2Total = coin2Count * 2;
 
                 Console.WriteLine("Введите количество монет номиналом 5 рублей:");
-                int coin5Count = GetIntegerInput();
+                int coin5Count = GetIntegerInput(0);
                 int coin5Total = coin5Count * 5;
 
                 Console.WriteLine("Введите количество монет номиналом 10 рублей:");
-                int coin10Count = GetIntegerInput();
+                int coin10Count = GetIntegerInput(0);
                 int coin10Total = coin10Count * 10;
 
                 int totalAmount = coin1Total + coin2Total + coin5Total + coin10Total;
@@ -47,7 +50,7 @@
             {
                 Console.WriteLine("Оплата картой данного банка.");
                 Console.WriteLine("Введите сумму для перевода:");
-                int amount = GetIntegerInput();
+                int amount = GetIntegerInput(0);
 
                 balance += amount;
                 user.Balance += amount;
@@ -59,7 +62,7 @@
             {
                 Console.WriteLine("Оплата с карты другого банка.");
                 Console.WriteLine("Введите сумму для перевода:");
-                int amount = GetIntegerInput();
+                int amount = GetIntegerInput(0);
 
                 int commission = (int)Math.Round(amount * 0.05);
                 int totalAmount = amount - commission;
@@ -197,7 +200,7 @@
                 Console.WriteLine($"\nВыбран товар: {products[selectedProductId].Name}.");
 
                 Console.WriteLine("Введите количество товара: ");
-                selectedProductQuantity = GetIntegerInput();
+                selectedProductQuantity = GetIntegerInput(0);
 
                 if (selectedProductQuantity <= 0)
                 {
@@ -262,13 +265,24 @@
             }
         }
 
-        private int GetIntegerInput()
+        private int GetIntegerInput(int minValue)
         {
             int input;
 
-            while (!int.TryParse(Console.ReadLine(), out input))
+            while (true)
             {
-                Console.WriteLine("Неверный ввод. Пожалуйста, введите целое число.");
+                if (!int.TryParse(Console.ReadLine(), out input))
+                {
+                    Console.WriteLine("Неверный ввод. Пожалуйста, введите целое число.");
+                }
+                else if (input < minValue)
+                {
+                    Console.WriteLine($"Неверное значение. Введите число {minValue} или больше.");
+                }
+                else
+                {
+                    break;
+                }
             }
 
             return input;
